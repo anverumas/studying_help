@@ -43,8 +43,8 @@ function calculateAverage() {
   const rows = document.querySelectorAll('.textField'); // Каждая строка 
   rows.forEach((row) => { 
     const selects = row.querySelectorAll('select'); // Все селекты в строке 
-    let total = 1; 
-    let count = 1; 
+    let total = 0; 
+    let count = 0; 
  
     // Пробегаемся по каждому селекту в строке 
     selects.forEach((select) => { 
@@ -55,7 +55,6 @@ function calculateAverage() {
       } 
     }); 
  
-    // Вычисляем среднее 
     const average = count > 0 ? (total / count).toFixed(2) : 0; 
  
     // Добавляем/обновляем отображение среднего 
