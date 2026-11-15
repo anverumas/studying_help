@@ -6,7 +6,7 @@ let timesMarkAdd = 0;
 let timesClassAdd = 0; 
 function addMarkField() { 
   element.innerHTML += 
-    '<select name="marks" id="mark_fld"><option value=" "></option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="MA">MA</option></select>'; 
+    '<select name="marks" id="mark_fld"><option value=" "></option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">MA</option></select>'; 
 } 
 function addOptionsToAllRows() { 
   const allInputs = document.querySelectorAll('.textField input'); 
@@ -14,7 +14,7 @@ function addOptionsToAllRows() {
     { 
       const select = document.createElement('select'); 
       select.innerHTML = 
-        '<select name="marks" id="mark_fld"><option value=" "></option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="MA">MA</option></select>'; 
+        '<select name="marks" id="mark_fld"><option value=" "></option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">MA</option></select>'; 
       input.after(select); 
     } 
   }); 
@@ -22,7 +22,10 @@ function addOptionsToAllRows() {
 class_add.addEventListener('click', function (event) { 
   console.log('Key pressed: ${event.key}'); 
   console.log('User input: ${event.target.value}'); 
-  element.innerHTML += ' <br /><input />'; 
+  const row = document.createElement('div');
+row.className = 'row';
+row.innerHTML = '<input />';
+element.appendChild(row);
   timesClassAdd += 1; 
   for (let i = 0; i < timesMarkAdd + 1; i++) { 
     addMarkField(); 
@@ -67,4 +70,5 @@ function calculateAverage() {
     averageDisplay.textContent = `avg:${average}`; 
   }); 
 } 
+addMarkField()
 setInterval(calculateAverage, 3000); 
