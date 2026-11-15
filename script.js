@@ -4,6 +4,17 @@ const mark_add = document.querySelector('#mark_add');
 const contentSy = document.querySelector('.textContent'); 
 let timesMarkAdd = 0; 
 let timesClassAdd = 0; 
+  function addClassField() { 
+  const row = document.createElement('div');
+row.className = 'row';
+row.innerHTML = '<input />';
+element.appendChild(row);
+  timesClassAdd += 1; 
+  for (let i = 0; i < timesMarkAdd + 1; i++) { 
+    addMarkField(row); 
+  } 
+}; 
+
   function addMarkField(row) {
   const select = document.createElement('select');
 
@@ -18,7 +29,8 @@ let timesClassAdd = 0;
 
   row.appendChild(select);}
 function addOptionsToAllRows() { 
-  const allInputs = document.querySelectorAll('.textField input'); 
+  const allInputs = document.querySelectorAll('.textField input');
+    timesMarkAdd += 1;  
   allInputs.forEach((input) => { 
     { 
       const select = document.createElement('select'); 
@@ -31,26 +43,18 @@ function addOptionsToAllRows() {
 class_add.addEventListener('click', function (event) { 
   console.log('Key pressed: ${event.key}'); 
   console.log('User input: ${event.target.value}'); 
-  const row = document.createElement('div');
-row.className = 'row';
-row.innerHTML = '<input />';
-element.appendChild(row);
-  timesClassAdd += 1; 
-  for (let i = 0; i < timesMarkAdd + 1; i++) { 
-    addMarkField(row); 
-  } 
+  addClassField()
 }); 
 mark_add.addEventListener('click', function (event) { 
   console.log('User input: ${event.target.value}'); 
   addOptionsToAllRows(); 
-  timesMarkAdd += 1; 
+
   calculateAverage(); 
   for (let i = 0; i < class_add + 1; i++) { 
     document.querySelector('.box').style.transform = 'translateY(-20px)'; 
     addOptionsToAllRows(); 
   } 
 }); 
-
 function calculateAverage() { 
   const rows = document.querySelectorAll('.row'); // Каждая строка 
   rows.forEach((row) => { 
@@ -79,4 +83,10 @@ function calculateAverage() {
     averageDisplay.textContent = `avg:${average}`; 
   }); 
 } 
+addClassField()
+addClassField()
+addClassField()
+addClassField()
+addClassField()
+addOptionsToAllRows()
 setInterval(calculateAverage, 3000); 
