@@ -4,10 +4,19 @@ const mark_add = document.querySelector('#mark_add');
 const contentSy = document.querySelector('.textContent'); 
 let timesMarkAdd = 0; 
 let timesClassAdd = 0; 
-function addMarkField() { 
-  element.innerHTML += 
-    '<select name="marks" id="mark_fld"><option value=" "></option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">MA</option></select>'; 
-} 
+  function addMarkField(row) {
+  const select = document.createElement('select');
+
+  select.innerHTML = `
+    <option value=" "></option>
+    <option value="5">5</option>
+    <option value="4">4</option>
+    <option value="3">3</option>
+    <option value="2">2</option>
+    <option value="MA">MA</option>
+  `;
+
+  row.appendChild(select);}
 function addOptionsToAllRows() { 
   const allInputs = document.querySelectorAll('.textField input'); 
   allInputs.forEach((input) => { 
@@ -28,7 +37,7 @@ row.innerHTML = '<input />';
 element.appendChild(row);
   timesClassAdd += 1; 
   for (let i = 0; i < timesMarkAdd + 1; i++) { 
-    addMarkField(); 
+    addMarkField(row); 
   } 
 }); 
 mark_add.addEventListener('click', function (event) { 
@@ -70,5 +79,5 @@ function calculateAverage() {
     averageDisplay.textContent = `avg:${average}`; 
   }); 
 } 
-addMarkField()
+addMarkField(document.querySelector('.textField'));
 setInterval(calculateAverage, 3000); 
