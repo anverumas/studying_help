@@ -4,15 +4,42 @@ const mark_add = document.querySelector('#mark_add');
 const contentSy = document.querySelector('.textContent'); 
 let timesMarkAdd = 0; 
 let timesClassAdd = 0; 
+function calculateAverage() { 
+  const mark = document.querySelectorAll('.row');
+  mark.forEach((row) => { 
+    const selects = row.querySelectorAll('select'); // Все селекты в строке 
+    let total = 0; 
+    let count = 0; 
+ 
+    // Пробегаемся по каждому селекту в строке 
+    selects.forEach((select) => { 
+      const value = parseInt(select.value); // Получаем значение из селекта 
+      if (!isNaN(value)) { 
+        total += value; 
+        count++; 
+      } 
+    }); 
+ 
+    const average = count > 0 ? (total / count).toFixed(2) : 0; 
+ 
+    // Добавляем/обновляем отображение среднего 
+    let averageDisplay = row.querySelector('.average'); 
+    averageDisplay.textContent = `avg:${average}`; 
+  }); 
+} 
   function addClassField() { 
   const row = document.createElement('div');
 row.className = 'row';
 row.innerHTML = '<input />';
 element.appendChild(row);
+
   timesClassAdd += 1; 
   for (let i = 0; i < timesMarkAdd + 1; i++) { 
     addMarkField(row); 
   } 
+let averageDisplay = document.createElement('span');
+averageDisplay.className = 'average';
+row.appendChild(averageDisplay);
 }; 
 
   function addMarkField(row) {
@@ -55,34 +82,7 @@ mark_add.addEventListener('click', function (event) {
     addOptionsToAllRows(); 
   } 
 }); 
-function calculateAverage() { 
-  const rows = document.querySelectorAll('.row'); // Каждая строка 
-  rows.forEach((row) => { 
-    const selects = row.querySelectorAll('select'); // Все селекты в строке 
-    let total = 0; 
-    let count = 0; 
- 
-    // Пробегаемся по каждому селекту в строке 
-    selects.forEach((select) => { 
-      const value = parseInt(select.value); // Получаем значение из селекта 
-      if (!isNaN(value)) { 
-        total += value; 
-        count++; 
-      } 
-    }); 
- 
-    const average = count > 0 ? (total / count).toFixed(2) : 0; 
- 
-    // Добавляем/обновляем отображение среднего 
-    let averageDisplay = row.querySelector('.average'); 
-    if (!averageDisplay) { 
-      averageDisplay = document.createElement('span'); 
-      averageDisplay.className = 'average'; 
-      row.appendChild(averageDisplay); 
-    } 
-    averageDisplay.textContent = `avg:${average}`; 
-  }); 
-} 
+
 addClassField()
 addClassField()
 addClassField()
@@ -90,4 +90,4 @@ addClassField()
 addClassField()
 addOptionsToAllRows()
 addOptionsToAllRows()
-setInterval(calculateAverage, 3000); 
+setInterval(calculateAverage, 500); 
