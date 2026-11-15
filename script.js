@@ -89,4 +89,5 @@ addClassField()
 addClassField()
 addClassField()
 addOptionsToAllRows()
+addOptionsToAllRows()
 setInterval(calculateAverage, 3000); 
