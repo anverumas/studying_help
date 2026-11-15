@@ -13,7 +13,7 @@ let timesClassAdd = 0;
     <option value="4">4</option>
     <option value="3">3</option>
     <option value="2">2</option>
-    <option value="MA">MA</option>
+    <option value="1">MA</option>
   `;
 
   row.appendChild(select);}
@@ -52,7 +52,7 @@ mark_add.addEventListener('click', function (event) {
 }); 
 
 function calculateAverage() { 
-  const rows = document.querySelectorAll('.textField'); // Каждая строка 
+  const rows = document.querySelectorAll('.row'); // Каждая строка 
   rows.forEach((row) => { 
     const selects = row.querySelectorAll('select'); // Все селекты в строке 
     let total = 0; 
@@ -79,5 +79,4 @@ function calculateAverage() {
     averageDisplay.textContent = `avg:${average}`; 
   }); 
 } 
-addMarkField(document.querySelector('.textField'));
 setInterval(calculateAverage, 3000); 
