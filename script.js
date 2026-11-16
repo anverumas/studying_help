@@ -12,14 +12,14 @@ const all_Marks =`
     <option value="2">2</option>
     <option value="1">MA</option>
   `
+
 function calculateAverage() { 
   const mark = document.querySelectorAll('.row');
   mark.forEach((row) => { 
     const selects = row.querySelectorAll('select:not(.finalGrade)');
     let total = 0; 
     let count = 0; 
- 
-    // Пробегаемся по каждому селекту в строке 
+
     selects.forEach((select) => { 
       const value = parseInt(select.value); // Получаем значение из селекта 
       if (!isNaN(value)) { 
@@ -29,8 +29,6 @@ function calculateAverage() {
     }); 
  
     const average = count > 0 ? (total / count).toFixed(2) : 0; 
- 
-    // Добавляем/обновляем отображение среднего 
     let averageDisplay = row.querySelector('.average'); 
     averageDisplay.textContent = `avg:${average}`; 
   }); 
@@ -92,6 +90,7 @@ class_add.addEventListener('click', function (event) {
   console.log('User input: ${event.target.value}'); 
   addClassField()
 }); 
+
 mark_add.addEventListener('click', function (event) { 
   console.log('User input: ${event.target.value}'); 
   addOptionsToAllRows(); 
@@ -102,10 +101,6 @@ mark_add.addEventListener('click', function (event) {
     addOptionsToAllRows(); 
   } 
 }); 
-
-finalGrade.addEventListener('change', function (event) {
-  console.log(event.target.value);
-});
 
 addClassField()
 addClassField()
