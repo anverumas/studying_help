@@ -37,3 +37,8 @@ res.status(500).json({
 });
   }
 });
+
+app.get('/subjects', (req, res) => {
+  const subjects = db.prepare('SELECT * FROM subjects').all();
+  res.json(subjects);
+});
