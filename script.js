@@ -40,6 +40,8 @@ function addClassField() {
   const row = document.createElement('div');
   row.className = 'row';
   row.innerHTML = '<input />';
+  const input = document.querySelector('input');
+  const name = input.value;
   element.appendChild(row);
 
   timesClassAdd += 1; 
