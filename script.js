@@ -46,7 +46,28 @@ input.addEventListener('keydown', function(event) {
   if (event.key === 'Enter') {
     const name = input.value.trim();
 
-    fetch('/subjects', {
+    if (subjectId !== undefined) {
+  fetch(`/subjects/${subjectId}`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ name: name })
+})
+.then(response => {
+  if (response.status === 200) {
+  console.log('Subject updated');
+  } else {
+        console.log('Failed to update subject');
+      }
+    })
+    .catch(error => {
+      console.log('Error:', error);
+    });
+} 
+
+else {
+  fetch('/subjects', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -56,6 +77,9 @@ input.addEventListener('keydown', function(event) {
     .then(response => {
       if (response.status === 201) {
         console.log('Subject saved');
+        response.json().then(data => {
+        subjectId = data.id;
+});
       } else {
         console.log('Failed to save subject');
       }
@@ -64,7 +88,11 @@ input.addEventListener('keydown', function(event) {
       console.log('Error:', error);
     });
   }
-});
+}
+    
+  })
+};
+
   element.appendChild(row);
 
   timesClassAdd += 1; 
@@ -94,7 +122,6 @@ input.addEventListener('keydown', function(event) {
   }
 });
   });
-}; 
 
 
 

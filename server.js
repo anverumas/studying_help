@@ -26,9 +26,10 @@ app.post('/subjects', (req, res) => {
     });
   }
   try {
-  statement.run(name);
+  const result = statement.run(name);
 res.status(201).json({
-  message: 'Subject created'
+  message: 'Subject created',
+  id: result.lastInsertRowid
 });
   } catch (error) {
 res.status(500).json({
@@ -66,4 +67,48 @@ res.status(500).json({
   message: 'Failed to delete subject'
 });
   }
+});
+
+const updateStatement = db.prepare(`
+  UPDATE subjects
+  SET name = ?
+  WHERE id = ?;
+`);
+
+app.put('/subjects/:id', (req, res) => {
+  const id = req.params.id;
+  const name = req.body.name;
+  if (typeof name !== 'string' || !name.trim()) {
+    return res.status(400).json({
+      message: 'Invalid subject name'
+    });
+  }
+  try {
+    const result = updateStatement.run(name, id);
+    if (result.changes === 0) {
+      return res.status(404).json({
+        message: 'Subject not found'
+      });
+    }
+    res.status(200).json({
+      message: 'Subject updated'
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to update subject'
+    });
+  }
+});
+
+fetch(`/subjects/${subjectId}`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ name: name })
+})
+.then(response => {
+  if (response.status === 200) {
+  console.log('Subject updated');
+  };
 });
