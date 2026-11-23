@@ -36,12 +36,35 @@ function calculateAverage() {
 
 
 
-function addClassField() { 
+function addClassField(subjectName) { 
   const row = document.createElement('div');
   row.className = 'row';
   row.innerHTML = '<input />';
-  const input = document.querySelector('input');
-  const name = input.value;
+  const input = row.querySelector('input');
+  input.value = subjectName ?? '';
+input.addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    const name = input.value.trim();
+
+    fetch('/subjects', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name: name })
+    })
+    .then(response => {
+      if (response.status === 201) {
+        console.log('Subject saved');
+      } else {
+        console.log('Failed to save subject');
+      }
+    })
+    .catch(error => {
+      console.log('Error:', error);
+    });
+  }
+});
   element.appendChild(row);
 
   timesClassAdd += 1; 
@@ -104,11 +127,15 @@ mark_add.addEventListener('click', function (event) {
   } 
 }); 
 
-addClassField()
-addClassField()
-addClassField()
-addClassField()
-addClassField()
-addOptionsToAllRows()
-addOptionsToAllRows()
+fetch('/subjects')
+  .then(response => response.json())
+  .then(subjects => {
+    subjects.forEach(subject => {
+      addClassField(subject.name);
+    });
+  })
+  .catch(error => {
+    console.log('Loading error:', error);
+  });
+
 setInterval(calculateAverage, 500); 
