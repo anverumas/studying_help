@@ -85,7 +85,14 @@ input.addEventListener('keydown', function(event) {
   row.appendChild(deleteButton);
   deleteButton.textContent = 'X';
   deleteButton.addEventListener('click', function () {
+      fetch(`/subjects/${subjectId}`, {
+  method: 'DELETE'
+})
+.then(response => {
+  if (response.status === 200) {
     row.remove();
+  }
+});
   });
 }; 
 
@@ -131,19 +138,12 @@ fetch('/subjects')
   .then(response => response.json())
   .then(subjects => {
     subjects.forEach(subject => {
-      addClassField(subject.name);
+      addClassField(subject.name, subject.id);
     });
   })
   .catch(error => {
     console.log('Loading error:', error);
   });
 
-  fetch(`/subjects/${subjectId}`, {
-  method: 'DELETE'
-})
-.then(response => {
-  if (response.status === 200) {
-    row.remove();
-  }
-});
+
 setInterval(calculateAverage, 500); 
