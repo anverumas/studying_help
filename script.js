@@ -91,7 +91,7 @@ else {
 }
     
   })
-};
+
 
   element.appendChild(row);
 
@@ -124,7 +124,7 @@ else {
   });
 
 
-
+}
 function addMarkField(row) {
   const select = document.createElement('select');
   select.innerHTML = all_Marks;

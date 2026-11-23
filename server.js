@@ -100,15 +100,3 @@ app.put('/subjects/:id', (req, res) => {
   }
 });
 
-fetch(`/subjects/${subjectId}`, {
-  method: 'PUT',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ name: name })
-})
-.then(response => {
-  if (response.status === 200) {
-  console.log('Subject updated');
-  };
-});
