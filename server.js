@@ -12,6 +12,17 @@ db.exec(`
     final_grade  integer
   );
 `);
+
+db.exec(`CREATE TABLE IF NOT EXISTS marks (
+  id INTEGER PRIMARY KEY,
+  subject_id INTEGER,
+  grade INTEGER,
+  FOREIGN KEY (subject_id) REFERENCES subjects(id)
+);
+`);
+
+db.pragma('foreign_keys = ON');
+
 console.log(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all());
 const statement = db.prepare(`
   INSERT INTO subjects (name)
