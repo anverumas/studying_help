@@ -49,3 +49,21 @@ const deleteStatement = db.prepare(`
   DELETE FROM subjects
   WHERE id = ?;
 `);
+
+app.delete('/subjects/:id', (req, res) => {
+  const id = req.params.id;
+  try {
+  const result = deleteStatement.run(id);
+  if (result.changes === 0) {
+    return res.status(404).json({
+    message: 'Subject not found'
+})}
+res.status(200).json({
+  message: 'Subject deleted'
+});
+  } catch (error) {
+res.status(500).json({
+  message: 'Failed to delete subject'
+});
+  }
+});

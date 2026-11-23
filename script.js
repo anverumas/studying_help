@@ -36,7 +36,7 @@ function calculateAverage() {
 
 
 
-function addClassField(subjectName) { 
+function addClassField(subjectName, subjectId) { 
   const row = document.createElement('div');
   row.className = 'row';
   row.innerHTML = '<input />';
@@ -138,4 +138,12 @@ fetch('/subjects')
     console.log('Loading error:', error);
   });
 
+  fetch(`/subjects/${subjectId}`, {
+  method: 'DELETE'
+})
+.then(response => {
+  if (response.status === 200) {
+    row.remove();
+  }
+});
 setInterval(calculateAverage, 500); 
