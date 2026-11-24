@@ -24,10 +24,12 @@ db.exec(`CREATE TABLE IF NOT EXISTS marks (
 db.pragma('foreign_keys = ON');
 
 console.log(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all());
+
 const statement = db.prepare(`
   INSERT INTO subjects (name)
   VALUES (?);
 `);
+
 console.log(db.prepare('SELECT * FROM subjects').all());
 app.post('/subjects', (req, res) => {
   const name = req.body.name;
@@ -57,10 +59,42 @@ app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');
 });
 
+
 const addMarkStatement = db.prepare(`
   INSERT INTO marks (subject_id, grade)
   VALUES (?, ?);
 `);
+
+
+app.post('/marks', (req, res) => {
+  const subjectId = req.body.subject_id;
+  const grade = req.body.grade;
+  
+  if (!Number.isInteger(grade) || grade < 2 || grade > 5) {
+  return res.status(400).json({
+    message: 'Invalid grade'
+  });
+}
+  if (!Number.isInteger(subjectId) || subjectId <= 0) {
+    return res.status(400).json({
+      message: 'Invalid subject ID'
+    });
+  }
+  try {
+  const result = addMarkStatement.run(subjectId, grade);
+
+  res.status(201).json({
+    message: 'Mark created',
+    id: result.lastInsertRowid
+  });
+} catch (error) {
+  res.status(500).json({
+    message: 'Failed to create mark'
+  });
+}
+  
+});
+
 
 
 const deleteStatement = db.prepare(`
