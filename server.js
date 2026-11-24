@@ -18,9 +18,9 @@ db.exec(`CREATE TABLE IF NOT EXISTS marks (
   subject_id INTEGER,
   grade INTEGER,
   FOREIGN KEY (subject_id) REFERENCES subjects(id)
+  ON DELETE CASCADE
 );
 `);
-
 db.pragma('foreign_keys = ON');
 
 console.log(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all());
@@ -56,6 +56,12 @@ app.get('/subjects', (req, res) => {
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');
 });
+
+const addMarkStatement = db.prepare(`
+  INSERT INTO marks (subject_id, grade)
+  VALUES (?, ?);
+`);
+
 
 const deleteStatement = db.prepare(`
   DELETE FROM subjects
@@ -111,3 +117,4 @@ app.put('/subjects/:id', (req, res) => {
   }
 });
 
+console.log(db.pragma('foreign_key_list(marks)'));
