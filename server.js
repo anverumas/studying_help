@@ -100,6 +100,37 @@ app.post('/marks', (req, res) => {
   
 });
 
+const updateMark = db.prepare(`
+  UPDATE marks
+  SET grade = ?
+  WHERE id = ?;
+`);
+
+app.put('/marks/:id', (req, res) => {
+  const id = req.params.id;
+  const grade = req.body.grade;
+  if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
+    return res.status(400).json({
+      message: 'Invalid grade'
+    });
+  }
+  try {
+    const result = updateMark.run(grade, id);
+    if (result.changes === 0) {
+      return res.status(404).json({
+        message: 'Mark not found'
+      });
+    }
+    res.status(200).json({
+      message: 'Mark updated'
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to update mark'
+    });
+  }
+});
+
 
 
 const deleteStatement = db.prepare(`

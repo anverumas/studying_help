@@ -80,6 +80,7 @@ else {
         console.log('Subject saved');
         response.json().then(data => {
         subjectId = data.id;
+        row.dataset.subjectId = data.id;
 });
       } else {
         console.log('Failed to save subject');
@@ -96,10 +97,7 @@ else {
 
   element.appendChild(row);
 
-  timesClassAdd += 1; 
-  for (let i = 0; i < timesMarkAdd + 1; i++) { 
-    addMarkField(row, subjectId); 
-  } 
+  timesClassAdd += 1;
   let averageDisplay = document.createElement('span');
   averageDisplay.className = 'average';
   row.appendChild(averageDisplay);
@@ -126,29 +124,50 @@ else {
 
 
 }
-function addMarkField(row, subjectId, grade) {
+function addMarkField(row, subjectId, grade, markId) {
   const select = document.createElement('select');
   select.innerHTML = all_Marks;
   select.value = grade;
-  row.appendChild(select);
+  if (markId !== undefined) {
+    select.dataset.markId = markId;
+  }
+  const average = row.querySelector('.average');
+  row.insertBefore(select, average);;
   select.addEventListener('change', function(event) {
   const grade = parseInt(event.target.value);
+  if (!Number.isInteger(grade)) {
+    return;
+  }
 
-  fetch('/marks', {
-  method: 'POST',
+  const associatedSubjectId = parseInt(row.dataset.subjectId);
+  if (!Number.isInteger(associatedSubjectId)) {
+    console.log('Save the subject before adding a mark');
+    return;
+  }
+
+  const existingMarkId = select.dataset.markId;
+  const updatingMark = existingMarkId !== undefined;
+
+  fetch(updatingMark ? `/marks/${existingMarkId}` : '/marks', {
+  method: updatingMark ? 'PUT' : 'POST',
   headers: {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-  subject_id: subjectId,
+  subject_id: associatedSubjectId,
   grade: grade
 })
 })
 .then(response => {
-  if (response.status === 201) {
+  if (updatingMark && response.status === 200) {
+    console.log('Mark updated');
+  } else if (!updatingMark && response.status === 201) {
     console.log('Mark saved');
+    return response.json().then(data => {
+      select.dataset.markId = data.id;
+    });
   } else {
-    console.log('Failed to save mark');
+    console.log(updatingMark ? 'Failed to update mark' : 'Failed to save mark');
   }
 })
 .catch(error => {
@@ -177,13 +196,12 @@ class_add.addEventListener('click', function (event) {
 
 mark_add.addEventListener('click', function (event) { 
   console.log('User input: ${event.target.value}'); 
-  addOptionsToAllRows(); 
+  const rows = document.querySelectorAll('.row');
 
+rows.forEach((row) => {
+  addMarkField(row, parseInt(row.dataset.subjectId));
+});
   calculateAverage(); 
-  for (let i = 0; i < class_add + 1; i++) { 
-    document.querySelector('.box').style.transform = 'translateY(-20px)'; 
-    addOptionsToAllRows(); 
-  } 
 }); 
 
 fetch('/subjects')
@@ -192,10 +210,23 @@ fetch('/subjects')
     subjects.forEach(subject => {
       addClassField(subject.name, subject.id);
     });
+    return fetch('/marks')
+  .then(response => response.json())
+.then(marks => {
+  const rows = document.querySelectorAll('.row');
+  marks.forEach((mark) => {
+  rows.forEach((row) => {
+    if (parseInt(row.dataset.subjectId) === mark.subject_id) {
+      addMarkField(row, mark.subject_id, mark.grade, mark.id);
+    }
+  });
+});
+})
   })
   .catch(error => {
     console.log('Loading error:', error);
-  });
+    
+});
 
 
 setInterval(calculateAverage, 500); 
