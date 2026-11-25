@@ -39,6 +39,7 @@ function calculateAverage() {
 function addClassField(subjectName, subjectId) { 
   const row = document.createElement('div');
   row.className = 'row';
+  row.dataset.subjectId = subjectId;
   row.innerHTML = '<input />';
   const input = row.querySelector('input');
   input.value = subjectName ?? '';
@@ -97,7 +98,7 @@ else {
 
   timesClassAdd += 1; 
   for (let i = 0; i < timesMarkAdd + 1; i++) { 
-    addMarkField(row); 
+    addMarkField(row, subjectId); 
   } 
   let averageDisplay = document.createElement('span');
   averageDisplay.className = 'average';
@@ -125,12 +126,36 @@ else {
 
 
 }
-function addMarkField(row) {
+function addMarkField(row, subjectId, grade) {
   const select = document.createElement('select');
   select.innerHTML = all_Marks;
-  row.appendChild(select);}
+  select.value = grade;
+  row.appendChild(select);
+  select.addEventListener('change', function(event) {
+  const grade = parseInt(event.target.value);
 
-
+  fetch('/marks', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+  subject_id: subjectId,
+  grade: grade
+})
+})
+.then(response => {
+  if (response.status === 201) {
+    console.log('Mark saved');
+  } else {
+    console.log('Failed to save mark');
+  }
+})
+.catch(error => {
+  console.log('Error:', error);
+});
+});
+}
 
 function addOptionsToAllRows() { 
   const allInputs = document.querySelectorAll('.textField input');

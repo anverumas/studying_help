@@ -59,18 +59,23 @@ app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');
 });
 
+app.get('/marks', (req, res) => {
+  const marks = db.prepare('SELECT * FROM marks').all();
+  res.json(marks);
+});
 
 const addMarkStatement = db.prepare(`
   INSERT INTO marks (subject_id, grade)
   VALUES (?, ?);
 `);
 
+console.log(db.prepare('SELECT * FROM marks').all());
 
 app.post('/marks', (req, res) => {
   const subjectId = req.body.subject_id;
   const grade = req.body.grade;
   
-  if (!Number.isInteger(grade) || grade < 2 || grade > 5) {
+  if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
   return res.status(400).json({
     message: 'Invalid grade'
   });
