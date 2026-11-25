@@ -122,6 +122,7 @@ else {
 });
   });
 
+  equalizeMarkFields();
 
 }
 function addMarkField(row, subjectId, grade, markId) {
@@ -176,6 +177,8 @@ function addMarkField(row, subjectId, grade, markId) {
 });
 }
 
+
+
 function addOptionsToAllRows() { 
   const allInputs = document.querySelectorAll('.textField input');
     timesMarkAdd += 1;  
@@ -204,6 +207,20 @@ rows.forEach((row) => {
   calculateAverage(); 
 }); 
 
+function equalizeMarkFields() {
+  const rows = document.querySelectorAll('.row');
+  const markCount = Math.max(0, ...Array.from(rows, (row) =>
+    row.querySelectorAll('select:not(.finalGrade)').length
+  ));
+
+  rows.forEach((row) => {
+    const rowMarkCount = row.querySelectorAll('select:not(.finalGrade)').length;
+    for (let i = rowMarkCount; i < markCount; i++) {
+      addMarkField(row, parseInt(row.dataset.subjectId));
+    }
+  });
+}
+
 fetch('/subjects')
   .then(response => response.json())
   .then(subjects => {
@@ -221,6 +238,7 @@ fetch('/subjects')
     }
   });
 });
+    equalizeMarkFields();
 })
   })
   .catch(error => {
