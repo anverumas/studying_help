@@ -8,8 +8,7 @@ const db = new database('diary.db');
 db.exec(`
   CREATE TABLE IF NOT EXISTS subjects (
     id INTEGER PRIMARY KEY,
-    name TEXT,
-    final_grade  integer
+    name TEXT
   );
 `);
 
@@ -20,6 +19,19 @@ db.exec(`CREATE TABLE IF NOT EXISTS marks (
   FOREIGN KEY (subject_id) REFERENCES subjects(id)
   ON DELETE CASCADE
 );
+`);
+
+db.exec(`
+  DELETE FROM marks
+  WHERE id NOT IN (
+    SELECT MIN(id)
+    FROM marks
+    GROUP BY subject_id
+  );
+`);
+db.exec(`
+  CREATE UNIQUE INDEX IF NOT EXISTS marks_subject_unique
+  ON marks(subject_id);
 `);
 db.pragma('foreign_keys = ON');
 
@@ -66,7 +78,8 @@ app.get('/marks', (req, res) => {
 
 const addMarkStatement = db.prepare(`
   INSERT INTO marks (subject_id, grade)
-  VALUES (?, ?);
+  VALUES (?, ?)
+  ON CONFLICT(subject_id) DO UPDATE SET grade = excluded.grade;
 `);
 
 console.log(db.prepare('SELECT * FROM marks').all());
@@ -86,11 +99,12 @@ app.post('/marks', (req, res) => {
     });
   }
   try {
-  const result = addMarkStatement.run(subjectId, grade);
+  addMarkStatement.run(subjectId, grade);
+  const mark = db.prepare('SELECT id FROM marks WHERE subject_id = ?').get(subjectId);
 
   res.status(201).json({
     message: 'Mark created',
-    id: result.lastInsertRowid
+    id: mark.id
   });
 } catch (error) {
   res.status(500).json({

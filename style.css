@@ -56,15 +56,6 @@ body {
   border-color: #405cf5;
 }
 
-.average {
-  padding: 5px 9px;
-  color: #285d48;
-  background: #e7f6ee;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
 .options {
   display: flex;
   flex-wrap: wrap;
@@ -95,15 +86,6 @@ body {
 .option-btn:focus-visible {
   outline: 3px solid rgba(64, 92, 245, 0.3);
   outline-offset: 3px;
-}
-
-#mark_add {
-  background: #19805b;
-  box-shadow: 0 3px 8px rgba(25, 128, 91, 0.2);
-}
-
-#mark_add:hover {
-  background: #126a4a;
 }
 
 .row {
