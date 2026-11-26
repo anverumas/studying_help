@@ -8,9 +8,14 @@ const db = new database('diary.db');
 db.exec(`
   CREATE TABLE IF NOT EXISTS subjects (
     id INTEGER PRIMARY KEY,
-    name TEXT
+    name TEXT,
+    review TEXT NOT NULL DEFAULT ''
   );
 `);
+
+if (!db.pragma('table_info(subjects)').some(column => column.name === 'review')) {
+  db.exec("ALTER TABLE subjects ADD COLUMN review TEXT NOT NULL DEFAULT ''");
+}
 
 db.exec(`CREATE TABLE IF NOT EXISTS marks (
   id INTEGER PRIMARY KEY,
@@ -38,20 +43,21 @@ db.pragma('foreign_keys = ON');
 console.log(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all());
 
 const statement = db.prepare(`
-  INSERT INTO subjects (name)
-  VALUES (?);
+  INSERT INTO subjects (name, review)
+  VALUES (?, ?);
 `);
 
 console.log(db.prepare('SELECT * FROM subjects').all());
 app.post('/subjects', (req, res) => {
   const name = req.body.name;
-  if (typeof name !== 'string' || !name.trim()) {
+  const review = req.body.review ?? '';
+  if (typeof name !== 'string' || !name.trim() || typeof review !== 'string') {
     return res.status(400).json({
-      message: 'Invalid subject name'
+      message: 'Invalid subject name or review'
     });
   }
   try {
-  const result = statement.run(name);
+  const result = statement.run(name, review);
 res.status(201).json({
   message: 'Subject created',
   id: result.lastInsertRowid
@@ -78,7 +84,7 @@ app.get('/marks', (req, res) => {
 
 app.get('/results', (req, res) => {
   const results = db.prepare(`
-    SELECT subjects.id, subjects.name, marks.grade
+    SELECT subjects.id, subjects.name, subjects.review, marks.grade
     FROM subjects
     LEFT JOIN marks ON marks.subject_id = subjects.id
     ORDER BY subjects.id
@@ -182,20 +188,21 @@ res.status(500).json({
 
 const updateStatement = db.prepare(`
   UPDATE subjects
-  SET name = ?
+  SET name = ?, review = ?
   WHERE id = ?;
 `);
 
 app.put('/subjects/:id', (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
-  if (typeof name !== 'string' || !name.trim()) {
+  const review = req.body.review ?? '';
+  if (typeof name !== 'string' || !name.trim() || typeof review !== 'string') {
     return res.status(400).json({
-      message: 'Invalid subject name'
+      message: 'Invalid subject name or review'
     });
   }
   try {
-    const result = updateStatement.run(name, id);
+    const result = updateStatement.run(name, review, id);
     if (result.changes === 0) {
       return res.status(404).json({
         message: 'Subject not found'

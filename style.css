@@ -29,7 +29,8 @@ body {
 }
 
 .textField input,
-.textField select {
+.textField select,
+.textField textarea {
   min-height: 36px;
   padding: 6px 10px;
   color: #233047;
@@ -43,6 +44,13 @@ body {
   width: min(100%, 240px);
 }
 
+.textField textarea.review-input {
+  width: min(100%, 400px);
+  min-height: 200px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
 .textField select {
   width: 60px;
   min-height: 30px;
@@ -51,7 +59,8 @@ body {
 }
 
 .textField input:focus,
-.textField select:focus {
+.textField select:focus,
+.textField textarea:focus {
   outline: 3px solid rgba(64, 92, 245, 0.18);
   border-color: #405cf5;
 }

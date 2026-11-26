@@ -8,12 +8,15 @@ fetch('/results')
     results.forEach(result => {
       const row = document.createElement('tr');
       const subjectCell = document.createElement('td');
+      const reviewCell = document.createElement('td');
       const markCell = document.createElement('td');
 
       subjectCell.textContent = result.name;
+      reviewCell.textContent = result.review ?? '';
       markCell.textContent = result.grade ?? '-';
 
       row.appendChild(subjectCell);
+      row.appendChild(reviewCell);
       row.appendChild(markCell);
       resultsBody.appendChild(row);
     });

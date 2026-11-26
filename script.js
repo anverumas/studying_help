@@ -9,63 +9,65 @@ const all_Marks =`
     <option value="2">2</option>
   `
 
-function addClassField(subjectName, subjectId) { 
+function addClassField(subjectName, subjectId, review = '') {
   const row = document.createElement('div');
   row.className = 'row';
   row.dataset.subjectId = subjectId;
-  row.innerHTML = '<input />';
-  const input = row.querySelector('input');
+  const input = document.createElement('input');
+  input.placeholder = 'subject';
   input.value = subjectName ?? '';
-  input.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-      const name = input.value.trim();
-
-      if (subjectId !== undefined) {
-        fetch(`/subjects/${subjectId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name: name })
-        })
-        .then(response => {
-          if (response.status === 200) {
-            console.log('Subject updated');
-          } else {
-            console.log('Failed to update subject');
-          }
-        })
-        .catch(error => {
-          console.log('Error:', error);
-        });
-      } else {
-        fetch('/subjects', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name: name })
-        })
-        .then(response => {
-          if (response.status === 201) {
-            console.log('Subject saved');
-            response.json().then(data => {
-              subjectId = data.id;
-              row.dataset.subjectId = data.id;
-            });
-          } else {
-            console.log('Failed to save subject');
-          }
-        })
-        .catch(error => {
-          console.log('Error:', error);
-        });
-      }
-    }
-  });
-
+  const reviewInput = document.createElement('textarea');
+  reviewInput.className = 'review-input';
+  reviewInput.placeholder = 'review';
+  reviewInput.value = review ?? '';
 
   element.appendChild(row);
+  row.appendChild(input);
+  row.appendChild(reviewInput);
+
+  function saveSubject() {
+    const body = JSON.stringify({
+      name: input.value.trim(),
+      review: reviewInput.value.trim()
+    });
+    const isSaved = subjectId !== undefined;
+
+    fetch(isSaved ? `/subjects/${subjectId}` : '/subjects', {
+      method: isSaved ? 'PUT' : 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body
+    })
+    .then(response => {
+      if (response.status === (isSaved ? 200 : 201)) {
+        console.log(isSaved ? 'Subject updated' : 'Subject saved');
+        if (!isSaved) {
+          return response.json().then(data => {
+            subjectId = data.id;
+            row.dataset.subjectId = data.id;
+          });
+        }
+      } else {
+        console.log(isSaved ? 'Failed to update subject' : 'Failed to save subject');
+      }
+    })
+    .catch(error => {
+      console.log('Error:', error);
+    });
+  }
+
+  input.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      saveSubject();
+    }
+  });
+  reviewInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      saveSubject();
+    }
+  });
 
   timesClassAdd += 1;
   let markSelect = document.createElement('select');
@@ -152,7 +154,7 @@ fetch('/subjects')
   .then(response => response.json())
   .then(subjects => {
     subjects.forEach(subject => {
-      addClassField(subject.name, subject.id);
+      addClassField(subject.name, subject.id, subject.review);
     });
     return fetch('/marks')
   .then(response => response.json())
