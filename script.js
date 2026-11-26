@@ -62,12 +62,7 @@ function addClassField(subjectName, subjectId, review = '') {
       saveSubject();
     }
   });
-  reviewInput.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      saveSubject();
-    }
-  });
+  reviewInput.addEventListener('change', saveSubject);
 
   timesClassAdd += 1;
   let markSelect = document.createElement('select');
