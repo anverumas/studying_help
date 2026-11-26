@@ -76,6 +76,16 @@ app.get('/marks', (req, res) => {
   res.json(marks);
 });
 
+app.get('/results', (req, res) => {
+  const results = db.prepare(`
+    SELECT subjects.id, subjects.name, marks.grade
+    FROM subjects
+    LEFT JOIN marks ON marks.subject_id = subjects.id
+    ORDER BY subjects.id
+  `).all();
+  res.json(results);
+});
+
 const addMarkStatement = db.prepare(`
   INSERT INTO marks (subject_id, grade)
   VALUES (?, ?)

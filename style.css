@@ -62,6 +62,52 @@ body {
   gap: 8px;
 }
 
+.page-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.page-nav a {
+  padding: 8px 12px;
+  color: #405cf5;
+  background: #fff;
+  border: 1px solid #cbd5e3;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.page-nav a.active {
+  color: #fff;
+  background: #405cf5;
+  border-color: #405cf5;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #e6ecf5;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.results-table th,
+.results-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e6ecf5;
+  text-align: left;
+}
+
+.results-table th {
+  background: #edf2ff;
+}
+
+.results-table tr:last-child td {
+  border-bottom: 0;
+}
+
 .option-btn {
   min-width: 38px;
   min-height: 38px;
